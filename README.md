@@ -65,3 +65,5 @@ flake8 .
 - разработка API;
 - контейнеризация приложения;
 - настройка CI/CD.
+
+запуск .\venv\Scripts\python.exe main.py
