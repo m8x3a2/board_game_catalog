@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "title": "Каркассон",
+    "category_id": 1,
+    "release_year": 2000
+  },
+  {
+    "id": 2,
+    "title": "Билет на поезд",
+    "category_id": 2,
+    "release_year": 2004
+  }
+]

@@ -1,43 +1,66 @@
-from datetime import date
+"""Консольная точка входа для каталога настольных игр."""
 
-# Данные об игре
-game_name = "Шахматы"
-category = "Стратегия"
-user_name = "Алексей"
-rating = 8.5
+from categories import find_category
+from games import find_games, sort_games
+from ratings import create_rating
+from storage import load_catalog, save_catalog
 
-# Функция 1: Статус рекомендации (как в твоем примере)
-def get_recommendation(rating):
-    if rating >= 8.0:
-        return "Отличная игра! Рекомендуем"
-    elif rating >= 7.0:
-        return "Хорошая игра, можно купить"
-    else:
-        return "На любителя"
 
-# Функция 2: Поиск по категории
-def get_category_message(category):
-    if category == "Стратегия":
-        return "Игры этой категории развивают мышление"
-    elif category == "Карточная":
-        return "Отличный выбор для вечеринки"
-    else:
-        return "Интересная категория"
+def show_games(games, categories, ratings) -> None:
+    """Вывести карточки всех игр."""
+    if not games:
+        print("В каталоге пока нет игр.")
+        return
+    for game in sort_games(games):
+        category = find_category(categories, game.category_id)
+        category_name = category.name if category else "Без категории"
+        print(game.card(category_name, ratings))
 
-# Функция 3: Статус пользователя (активен или новичок)
-def get_user_status(rating):
-    if rating >= 7:
-        return "Опытный игрок"
-    else:
-        return "Новичок"
 
-# Вывод информации
-print("🎲 КАТАЛОГ НАСТОЛЬНЫХ ИГР")
-print(f"Игра: {game_name}")
-print(f"Категория: {category}")
-print(f"Пользователь: {user_name}")
-print(f"Оценка: {rating} из 10")
-print(f"Статус: {get_recommendation(rating)}")
-print(f"Совет: {get_category_message(category)}")
-print(f"Уровень пользователя: {get_user_status(rating)}")
-print(f"Дата: {date.today()}")
+def show_search(games, categories, ratings) -> None:
+    """Запросить строку и показать подходящие игры."""
+    query = input("Название для поиска: ").strip()
+    show_games(find_games(games, query), categories, ratings)
+
+
+def add_rating(games, users, ratings) -> None:
+    """Добавить оценку, проверив введённые идентификаторы и число."""
+    try:
+        game_id = int(input("ID игры: "))
+        user_id = int(input("ID пользователя: "))
+        score = int(input("Оценка от 0 до 10: "))
+        comment = input("Короткий отзыв: ").strip()
+        rating = create_rating(ratings, games, users, game_id, user_id, score, comment)
+    except ValueError as error:
+        print(f"Ошибка: {error}")
+        return
+    ratings.append(rating)
+    print("Оценка добавлена.")
+
+
+def main() -> None:
+    """Запустить простое меню приложения."""
+    categories, games, users, ratings = load_catalog()
+    while True:
+        print("\nКаталог настольных игр")
+        print("1 - показать игры")
+        print("2 - найти игру")
+        print("3 - добавить оценку")
+        print("0 - сохранить и выйти")
+        command = input("Выберите действие: ").strip()
+        if command == "1":
+            show_games(games, categories, ratings)
+        elif command == "2":
+            show_search(games, categories, ratings)
+        elif command == "3":
+            add_rating(games, users, ratings)
+        elif command == "0":
+            save_catalog(categories, games, users, ratings)
+            print("Данные сохранены. До свидания!")
+            break
+        else:
+            print("Неизвестная команда.")
+
+
+if __name__ == "__main__":
+    main()
