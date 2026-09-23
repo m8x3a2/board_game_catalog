@@ -1,26 +1,24 @@
 """Консольная точка входа для каталога настольных игр."""
 
-from categories import find_category
 from games import find_games, sort_games
-from ratings import create_rating
+from reviews import create_review
 from storage import load_catalog, save_catalog
+from users import find_user
 
 
-def show_games(games, categories, ratings) -> None:
+def show_games(games, reviews) -> None:
     """Вывести карточки всех игр."""
     if not games:
         print("В каталоге пока нет игр.")
         return
     for game in sort_games(games):
-        category = find_category(categories, game.category_id)
-        category_name = category.name if category else "Без категории"
-        print(game.card(category_name, ratings))
+        print(game.card(reviews))
 
 
-def show_search(games, categories, ratings) -> None:
+def show_search(games, reviews) -> None:
     """Запросить строку и показать подходящие игры."""
     query = input("Название для поиска: ").strip()
-    show_games(find_games(games, query), categories, ratings)
+    show_games(find_games(games, query), reviews)
 
 
 def add_rating(games, users, ratings) -> None:
@@ -30,7 +28,13 @@ def add_rating(games, users, ratings) -> None:
         user_id = int(input("ID пользователя: "))
         score = int(input("Оценка от 0 до 10: "))
         comment = input("Короткий отзыв: ").strip()
-        rating = create_rating(ratings, games, users, game_id, user_id, score, comment)
+        game = next((item for item in games if item.id == game_id), None)
+        user = find_user(users, user_id)
+        if game is None:
+            raise ValueError("Игра с таким ID не найдена.")
+        if user is None:
+            raise ValueError("Пользователь с таким ID не найден.")
+        rating = create_review(ratings, game, user, score, comment)
     except ValueError as error:
         print(f"Ошибка: {error}")
         return
@@ -49,9 +53,9 @@ def main() -> None:
         print("0 - сохранить и выйти")
         command = input("Выберите действие: ").strip()
         if command == "1":
-            show_games(games, categories, ratings)
+            show_games(games, ratings)
         elif command == "2":
-            show_search(games, categories, ratings)
+            show_search(games, ratings)
         elif command == "3":
             add_rating(games, users, ratings)
         elif command == "0":

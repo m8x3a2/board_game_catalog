@@ -1,6 +1,6 @@
 """Операции с коллекцией объектов Game."""
 
-from models import Game
+from models import Category, Game
 
 
 def find_games(games: list[Game], query: str) -> list[Game]:
@@ -9,9 +9,12 @@ def find_games(games: list[Game], query: str) -> list[Game]:
     return [game for game in games if normalized_query in game.title.lower()]
 
 
-def filter_games_by_category(games: list[Game], category_id: int) -> list[Game]:
-    """Отобрать игры по идентификатору категории."""
-    return [game for game in games if game.category_id == category_id]
+def filter_games_by_category(
+    games: list[Game],
+    category: Category,
+) -> list[Game]:
+    """Отобрать игры по объекту категории."""
+    return [game for game in games if game.category is category]
 
 
 def sort_games(games: list[Game]) -> list[Game]:
@@ -22,7 +25,7 @@ def sort_games(games: list[Game]) -> list[Game]:
 def add_game(
     games: list[Game],
     title: str,
-    category_id: int,
+    category: Category,
     release_year: int,
 ) -> Game:
     """Создать игру с очередным идентификатором."""
@@ -31,4 +34,4 @@ def add_game(
     if release_year < 1900:
         raise ValueError("Год выпуска должен быть не меньше 1900.")
     new_id = max((game.id for game in games), default=0) + 1
-    return Game(new_id, title.strip(), category_id, release_year)
+    return Game(new_id, title.strip(), category, release_year)

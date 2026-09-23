@@ -4,13 +4,14 @@ import pytest
 
 import storage
 from games import find_games, sort_games
-from models import Category, Game, Rating, User
-from ratings import create_rating
+from models import Category, Game, Review, User
+from reviews import create_review
 
 
 def test_find_and_sort_games() -> None:
     """Поиск не зависит от регистра, а сортировка не меняет исходный список."""
-    games = [Game(1, "Каркассон", 1, 2000), Game(2, "Азул", 2, 2017)]
+    category = Category(1, "Стратегия", "Описание")
+    games = [Game(1, "Каркассон", category, 2000), Game(2, "Азул", category, 2017)]
 
     assert find_games(games, "КАР") == [games[0]]
     assert sort_games(games) == [games[1], games[0]]
@@ -18,15 +19,18 @@ def test_find_and_sort_games() -> None:
 
 def test_create_rating_validates_score_and_links() -> None:
     """Оценка создаётся только в диапазоне 0-10 для существующих объектов."""
-    games = [Game(1, "Каркассон", 1, 2000)]
+    category = Category(1, "Стратегия", "Описание")
+    games = [Game(1, "Каркассон", category, 2000)]
     users = [User(1, "Мария")]
     ratings = []
 
-    rating = create_rating(ratings, games, users, 1, 1, 7, "Нравится")
+    review = create_review(ratings, games[0], users[0], 7, "Нравится")
 
-    assert rating.score == 7
+    assert review.game is games[0]
+    assert review.user is users[0]
+    assert review.score == 7
     with pytest.raises(ValueError):
-        create_rating(ratings, games, users, 1, 1, 11, "Ошибка")
+        create_review(ratings, games[0], users[0], 11, "Ошибка")
 
 
 def test_storage_loads_and_saves_objects(monkeypatch) -> None:
@@ -72,5 +76,7 @@ def test_storage_loads_and_saves_objects(monkeypatch) -> None:
     assert isinstance(categories[0], Category)
     assert isinstance(games[0], Game)
     assert isinstance(users[0], User)
-    assert isinstance(ratings[0], Rating)
-    assert saved_items["ratings.json"][0]["score"] == 10
+    assert isinstance(ratings[0], Review)
+    assert ratings[0].game is games[0]
+    assert ratings[0].user is users[0]
+    assert saved_items["ratings.json"][0]["game_id"] == 1
