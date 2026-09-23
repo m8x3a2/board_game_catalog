@@ -1,7 +1,5 @@
 """Тесты функций поиска, сортировки, оценок и хранения JSON."""
 
-import json
-
 import pytest
 
 import storage
@@ -31,8 +29,8 @@ def test_create_rating_validates_score_and_links() -> None:
         create_rating(ratings, games, users, 1, 1, 11, "Ошибка")
 
 
-def test_storage_loads_objects(monkeypatch, tmp_path) -> None:
-    """Загрузка JSON создаёт объекты классов, а сохранение записывает JSON."""
+def test_storage_loads_and_saves_objects(monkeypatch) -> None:
+    """JSON-словарь преобразуется в объекты и обратно без временных файлов."""
     source = {
         "categories.json": [
             {"id": 1, "name": "Семейная", "description": "Для всех"},
@@ -56,9 +54,17 @@ def test_storage_loads_objects(monkeypatch, tmp_path) -> None:
             },
         ],
     }
-    for filename, content in source.items():
-        (tmp_path / filename).write_text(json.dumps(content), encoding="utf-8")
-    monkeypatch.setattr(storage, "DATA_DIR", tmp_path)
+
+    def load_items(filename: str) -> list[dict]:
+        return source[filename]
+
+    saved_items: dict[str, list[dict]] = {}
+
+    def save_items(filename: str, items: list[dict]) -> None:
+        saved_items[filename] = items
+
+    monkeypatch.setattr(storage, "_load_items", load_items)
+    monkeypatch.setattr(storage, "_save_items", save_items)
 
     categories, games, users, ratings = storage.load_catalog()
     storage.save_catalog(categories, games, users, ratings)
@@ -67,5 +73,4 @@ def test_storage_loads_objects(monkeypatch, tmp_path) -> None:
     assert isinstance(games[0], Game)
     assert isinstance(users[0], User)
     assert isinstance(ratings[0], Rating)
-    saved = json.loads((tmp_path / "ratings.json").read_text(encoding="utf-8"))
-    assert saved[0]["score"] == 10
+    assert saved_items["ratings.json"][0]["score"] == 10
