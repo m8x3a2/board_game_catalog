@@ -3,9 +3,9 @@
 import pytest
 
 import storage
-from games import find_games, sort_games
+from games import find_game_by_id, find_games, sort_games
 from models import Category, Game, Review, User
-from reviews import create_review
+from reviews import create_review, find_review_by_id
 
 
 def test_find_and_sort_games() -> None:
@@ -15,6 +15,18 @@ def test_find_and_sort_games() -> None:
 
     assert find_games(games, "КАР") == [games[0]]
     assert sort_games(games) == [games[1], games[0]]
+
+
+def test_find_game_and_review_by_id() -> None:
+    """Поиск по ID возвращает объект или None, если объекта нет."""
+    category = Category(1, "Стратегия", "Описание")
+    game = Game(1, "Каркассон", category, 2000)
+    review = Review(1, game, User(1, "Мария"), 9, "Отлично")
+
+    assert find_game_by_id([game], 1) is game
+    assert find_game_by_id([game], 999) is None
+    assert find_review_by_id([review], 1) is review
+    assert find_review_by_id([review], 999) is None
 
 
 def test_create_rating_validates_score_and_links() -> None:

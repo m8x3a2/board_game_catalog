@@ -9,6 +9,11 @@ def find_games(games: list[Game], query: str) -> list[Game]:
     return [game for game in games if normalized_query in game.title.lower()]
 
 
+def find_game_by_id(games: list[Game], game_id: int) -> Game | None:
+    """Найти игру по идентификатору."""
+    return next((game for game in games if game.id == game_id), None)
+
+
 def filter_games_by_category(
     games: list[Game],
     category: Category,

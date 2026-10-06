@@ -17,6 +17,11 @@ def create_review(
     return Review(new_id, game, user, score, comment.strip())
 
 
+def find_review_by_id(reviews: list[Review], review_id: int) -> Review | None:
+    """Найти отзыв по идентификатору."""
+    return next((review for review in reviews if review.id == review_id), None)
+
+
 def reviews_for_game(reviews: list[Review], game: Game) -> list[Review]:
     """Вернуть отзывы, связанные с переданным объектом игры."""
     return [review for review in reviews if review.game is game]

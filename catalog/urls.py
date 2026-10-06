@@ -1,0 +1,10 @@
+"""Маршруты приложения catalog (подключены с префиксом games/)."""
+
+from django.urls import path
+
+from . import views
+
+urlpatterns = [
+    path("", views.games, name="games"),
+    path("<int:game_id>/", views.game_detail, name="game_detail"),
+]
