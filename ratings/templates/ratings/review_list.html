@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Отзывы – Каталог настольных игр{% endblock %}
+
+{% block content %}
+  <h1>Отзывы</h1>
+  <p class="text-muted">Всего отзывов: {{ reviews|length }}</p>
+
+  <ul class="list-group">
+    {% for review in reviews %}
+      {% include "ratings/includes/review_item.html" %}
+    {% empty %}
+      <li class="list-group-item empty-message">Отзывов пока нет.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

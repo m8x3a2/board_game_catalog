@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Игры – Каталог настольных игр{% endblock %}
+
+{% block content %}
+  <h1>Игры</h1>
+  <p class="text-muted">Всего игр: {{ game_rows|length }}</p>
+
+  {% for row in game_rows %}
+    {% include "catalog/includes/game_card.html" with game=row.game average=row.average %}
+  {% empty %}
+    <p class="empty-message">В каталоге пока нет игр.</p>
+  {% endfor %}
+{% endblock %}

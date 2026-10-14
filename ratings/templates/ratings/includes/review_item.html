@@ -1,0 +1,12 @@
+<li class="list-group-item review-item d-flex justify-content-between align-items-center">
+  <div>
+    <a href="{% url 'ratings:detail' review.id %}">
+      {{ review.game.title }} – {{ review.user.name }}
+    </a>
+    <br>
+    <small class="text-muted">
+      {{ review.comment|default:"Без комментария"|truncatechars:40 }}
+    </small>
+  </div>
+  {% include "includes/score_badge.html" with score=review.score %}
+</li>

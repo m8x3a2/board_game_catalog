@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {% if game %}
+    {{ game.title }} – Каталог настольных игр
+  {% else %}
+    Игра не найдена – Каталог настольных игр
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% if game %}
+    <div class="card game-card mb-4">
+      <div class="card-body">
+        <h1 class="h3 card-title">{{ game.title }}</h1>
+        <p class="card-text"><strong>ID:</strong> {{ game.id }}</p>
+        <p class="card-text">
+          <strong>Год выпуска:</strong> {{ game.release_year }}
+        </p>
+        <p class="card-text">
+          <strong>Категория:</strong> {{ game.category.name }}
+          <br>
+          <small class="text-muted">
+            {{ game.category.description|default:"Описание категории отсутствует." }}
+          </small>
+        </p>
+        <p class="card-text">
+          <strong>Средняя оценка:</strong>
+          {% include "includes/score_badge.html" with score=average %}
+          {{ rating_label }}
+        </p>
+      </div>
+    </div>
+
+    <h2 class="h4">Отзывы ({{ game_reviews|length }})</h2>
+    <ul class="list-group">
+      {% for review in game_reviews %}
+        {% include "ratings/includes/review_item.html" %}
+      {% empty %}
+        <li class="list-group-item empty-message">Отзывов пока нет.</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <h1 class="text-danger">Игра не найдена</h1>
+    <p>Игра с указанным идентификатором отсутствует в каталоге.</p>
+  {% endif %}
+
+  <a href="{% url 'catalog:list' %}" class="btn btn-outline-secondary mt-3">
+    ← к списку игр
+  </a>
+{% endblock %}

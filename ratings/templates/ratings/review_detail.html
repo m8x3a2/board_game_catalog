@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {% if review %}
+    Отзыв №{{ review.id }} – Каталог настольных игр
+  {% else %}
+    Отзыв не найден – Каталог настольных игр
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% if review %}
+    <div class="card review-card">
+      <div class="card-body">
+        <h1 class="h3 card-title">Отзыв №{{ review.id }}</h1>
+        <p class="card-text">
+          <strong>Игра:</strong>
+          <a href="{% url 'catalog:detail' review.game.id %}">
+            {{ review.game.title }}
+          </a>
+        </p>
+        <p class="card-text">
+          <strong>Пользователь:</strong> {{ review.user.name }}
+        </p>
+        <p class="card-text">
+          <strong>Оценка:</strong>
+          {% include "includes/score_badge.html" with score=review.score %}
+        </p>
+        <p class="card-text">
+          <strong>Комментарий:</strong>
+          {{ review.comment|default:"пользователь не оставил комментарий" }}
+        </p>
+      </div>
+    </div>
+  {% else %}
+    <h1 class="text-danger">Отзыв не найден</h1>
+    <p>Отзыв с указанным идентификатором отсутствует.</p>
+  {% endif %}
+
+  <a href="{% url 'ratings:list' %}" class="btn btn-outline-secondary mt-3">
+    ← к списку отзывов
+  </a>
+{% endblock %}

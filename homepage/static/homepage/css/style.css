@@ -1,0 +1,62 @@
+/* Собственные стили проекта «Каталог настольных игр». */
+
+:root {
+  --catalog-bg: #f6f4ef;
+  --catalog-accent: #8b5e34;
+  --catalog-card-border: #e2d9c8;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--catalog-bg);
+}
+
+main {
+  flex: 1;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.site-nav {
+  border-bottom: 4px solid var(--catalog-accent);
+}
+
+.site-logo {
+  width: 40px;
+  height: 40px;
+  margin-right: 0.6rem;
+}
+
+.game-card,
+.review-card {
+  border: 1px solid var(--catalog-card-border);
+  border-left: 6px solid var(--catalog-accent);
+  border-radius: 8px;
+}
+
+.game-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.review-item {
+  background-color: #fffdf8;
+}
+
+.score-badge {
+  min-width: 3.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.empty-message {
+  font-style: italic;
+  color: #6c757d;
+}
+
+.site-footer {
+  padding-top: 1rem;
+  border-top: 1px solid var(--catalog-card-border);
+  color: #6c757d;
+}

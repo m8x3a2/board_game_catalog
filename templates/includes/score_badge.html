@@ -1,0 +1,11 @@
+{% if score >= 9 %}
+  <span class="badge bg-success score-badge">{{ score|floatformat:"-1" }}/10</span>
+{% elif score >= 7 %}
+  <span class="badge bg-primary score-badge">{{ score|floatformat:"-1" }}/10</span>
+{% elif score >= 5 %}
+  <span class="badge bg-warning text-dark score-badge">{{ score|floatformat:"-1" }}/10</span>
+{% elif score == 0 %}
+  <span class="badge bg-secondary score-badge">{{ score|floatformat:"-1" }}/10</span>
+{% else %}
+  <span class="badge bg-danger score-badge">{{ score|floatformat:"-1" }}/10</span>
+{% endif %}

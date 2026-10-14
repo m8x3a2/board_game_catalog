@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Главная – Каталог настольных игр{% endblock %}
+
+{% block content %}
+  <h1 class="display-4">Каталог настольных игр</h1>
+  <p class="lead">
+    Учёт настольных игр, их категорий и отзывов пользователей
+    с оценкой от 0 до 10.
+  </p>
+
+  <ul class="list-inline text-muted">
+    <li class="list-inline-item">Игр: {{ games|length }}</li>
+    <li class="list-inline-item">Категорий: {{ categories|length }}</li>
+    <li class="list-inline-item">Пользователей: {{ users|length }}</li>
+    <li class="list-inline-item">Отзывов: {{ reviews|length }}</li>
+  </ul>
+
+  <h2 class="h5">Категории</h2>
+  <ul>
+    {% for category in categories %}
+      <li>
+        <strong>{{ category.name }}</strong> –
+        {{ category.description|default:"описание отсутствует"|lower }}
+      </li>
+    {% empty %}
+      <li>Категории пока не добавлены.</li>
+    {% endfor %}
+  </ul>
+
+  <p>Основные разделы:</p>
+  <a href="{% url 'catalog:list' %}" class="btn btn-primary me-2">Игры</a>
+  <a href="{% url 'ratings:list' %}" class="btn btn-secondary">Отзывы</a>
+{% endblock %}
